@@ -4,7 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "debug": "ndb server.js"
   },
   "author": "Ossiakeme Stephen",
   "license": "ISC",
@@ -13,6 +14,7 @@
     "express": "^4.21.2",
     "mongoose": "^5.13.23",
     "morgan": "^1.10.0",
-    "slugify": "^1.6.6"
+    "slugify": "^1.6.6",
+    "validator": "^13.15.0"
   }
 }
