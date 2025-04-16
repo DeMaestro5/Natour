@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const { use } = require('../routes/userRoutes');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -47,6 +48,16 @@ userSchema.pre('save', async function (next) {
   this.passwordConfirm = undefined; // Remove passwordConfirm field after hashing
   next();
 });
+
+// Instance method to check if password is correct
+
+userSchema.methods.correctPassword = async function (
+  candidatePassword,
+  userPassword
+) {
+  // Compare the passwords using bcrypt
+  return await bcrypt.compare(candidatePassword, userPassword);
+};
 
 const User = mongoose.model('User', userSchema);
 
