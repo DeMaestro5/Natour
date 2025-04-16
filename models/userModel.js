@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
-const { use } = require('../routes/userRoutes');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -32,6 +31,7 @@ const userSchema = new mongoose.Schema({
       message: 'Passwords are not the same!',
     },
   },
+  passwordChangedAt: Date,
   photo: {
     type: String,
     default: 'default.jpg',
@@ -57,6 +57,20 @@ userSchema.methods.correctPassword = async function (
 ) {
   // Compare the passwords using bcrypt
   return await bcrypt.compare(candidatePassword, userPassword);
+};
+
+// Instance method to check if password has been changed after token was issued
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+  // Check if password was changed after the token was issued
+  if (this.passwordChangedAt) {
+    const changedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    );
+    return JWTTimestamp < changedTimestamp; // Token is invalid if it was issued before the password was changed
+  }
+  // If password was not changed, return false
+  return false;
 };
 
 const User = mongoose.model('User', userSchema);
