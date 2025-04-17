@@ -95,8 +95,6 @@ userSchema.methods.createPasswordResetToken = function () {
     .createHash('sha256')
     .update(resetToken)
     .digest('hex'); // Hash the token and save it to the database
-
-  console.log(this.passwordResetToken, { resetToken });
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000; // Set expiration time for the token
   return resetToken; // Return the plain token to send to the user
 };
