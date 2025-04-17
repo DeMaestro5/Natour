@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
+const { type } = require('os');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -37,6 +38,11 @@ const userSchema = new mongoose.Schema({
       message: 'Passwords are not the same!',
     },
   },
+  active: {
+    type: Boolean,
+    default: true,
+    select: false,
+  },
   passwordChangedAt: Date,
   photo: {
     type: String,
@@ -62,6 +68,12 @@ userSchema.pre('save', function (next) {
   if (!this.isModified('password') || this.isNew) return next();
   // Set passwordChangedAt to current date
   this.passwordChangedAt = Date.now() - 1000; // Subtract 1 second to ensure the token is valid
+  next();
+});
+
+userSchema.pre(/^find/, function (next) {
+  // This middleware runs before every find query
+  this.find({ active: { $ne: false } }); // Exclude inactive users
   next();
 });
 
