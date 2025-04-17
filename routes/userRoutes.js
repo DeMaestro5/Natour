@@ -18,7 +18,6 @@ router
 router
   .route('/delete-me')
   .delete(authController.protect, userController.deleteMe);
-
 router
   .route('/')
   .get(userController.getAllUsers)
