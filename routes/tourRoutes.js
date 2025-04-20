@@ -1,8 +1,12 @@
 const express = require('express');
 const tourController = require('../controllers/tourController');
 const authController = require('../controllers/authController');
+const reviewRouter = require('./reviewsRoutes');
 
 const router = express.Router();
+
+// Nested routes
+router.use('/:tourId/reviews', reviewRouter);
 
 router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan);
 router.route('/tour-stats').get(tourController.getTourStats);
@@ -25,4 +29,5 @@ router
     tourController.deleteTour
   );
 
+//
 module.exports = router;
