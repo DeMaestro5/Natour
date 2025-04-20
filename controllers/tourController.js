@@ -11,76 +11,8 @@ exports.aliasTopTours = (req, res, next) => {
   next();
 };
 
-exports.getAllTours = catchAsync(async (req, res) => {
-  // Build the query
-  // 1a. Filtering
-  // const queryObj = { ...req.query };
-  // const excludedFields = ['page', 'sort', 'limit', 'fields'];
-  // excludedFields.forEach((el) => delete queryObj[el]);
-
-  // // 1b. Advanced filtering
-  // let queryStr = JSON.stringify(queryObj);
-  // queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-  // let query = Tour.find(JSON.parse(queryStr));
-
-  //2. Sorting
-  // if (req.query.sort) {
-  //   const sortby = req.query.sort.split(',').join(' ');
-  //   query = query.sort(sortby);
-  // } else {
-  //   query = query.sort('-createdAt'); // default sort
-  // }
-  //3. Field limiting
-  // if (req.query.fields) {
-  //   const fields = req.query.fields.split(',').join(' ');
-  //   query = query.select(fields);
-  // } else {
-  //   query = query.select('-__v'); // exclude __v field
-  // }
-
-  // //4. Pagination
-  // const page = req.query.page * 1 || 1;
-  // const limit = req.query.limit * 1 || 100;
-  // const skip = (page - 1) * limit;
-
-  // query = query.skip(skip).limit(limit);
-
-  // if (req.query.page) {
-  //   const numTours = await Tour.countDocuments();
-  //   if (skip >= numTours) throw new Error('This page does not exist');
-  // }
-
-  // EXECUTE the query
-  const features = new APIFeature(Tour.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
-  const tours = await features.query;
-
-  res.status(200).json({
-    status: 'success',
-    results: tours.length,
-    data: {
-      tours,
-    },
-  });
-});
-
-exports.getTourById = catchAsync(async (req, res, next) => {
-  const id = req.params.id;
-  const tour = await Tour.findById(id).populate('reviews');
-  if (!tour) {
-    return next(new AppError('No tour found with that ID', 404));
-  }
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour,
-    },
-  });
-});
-
+exports.getAllTours = factory.getAll(Tour);
+exports.getTourById = factory.getOne(Tour, { path: 'reviews' });
 exports.createNewTour = factory.createOne(Tour);
 exports.updateTour = factory.updateOne(Tour);
 exports.deleteTour = factory.deleteOne(Tour);
