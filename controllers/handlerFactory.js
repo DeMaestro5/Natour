@@ -12,3 +12,32 @@ exports.deleteOne = (Model) =>
       data: null,
     });
   });
+
+exports.updateOne = (Model) =>
+  catchAsync(async (req, res, next) => {
+    const id = req.params.id;
+    const doc = await Model.findByIdAndUpdate(id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!doc) {
+      return next(new AppError('No document found with that ID', 404));
+    }
+    res.status(200).json({
+      status: 'Tour updated',
+      data: {
+        doc,
+      },
+    });
+  });
+
+exports.createOne = (Model) =>
+  catchAsync(async (req, res, next) => {
+    const newDoc = await Model.create(req.body);
+    res.status(201).json({
+      status: 'success',
+      data: {
+        newDoc,
+      },
+    });
+  });

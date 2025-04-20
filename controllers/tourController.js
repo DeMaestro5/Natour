@@ -67,16 +67,6 @@ exports.getAllTours = catchAsync(async (req, res) => {
   });
 });
 
-exports.createNewTour = catchAsync(async (req, res, next) => {
-  const newTour = await Tour.create(req.body);
-  res.status(201).json({
-    status: 'success',
-    data: {
-      tour: newTour,
-    },
-  });
-});
-
 exports.getTourById = catchAsync(async (req, res, next) => {
   const id = req.params.id;
   const tour = await Tour.findById(id).populate('reviews');
@@ -91,34 +81,8 @@ exports.getTourById = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.updateTour = catchAsync(async (req, res, next) => {
-  const id = req.params.id;
-  const updatedTour = await Tour.findByIdAndUpdate(id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-  if (!updatedTour) {
-    return next(new AppError('No tour found with that ID', 404));
-  }
-  res.status(200).json({
-    status: 'Tour updated',
-    data: {
-      tour: updatedTour,
-    },
-  });
-});
-
-// exports.deleteTour = catchAsync(async (req, res, next) => {
-//   const id = req.params.id;
-//   const tour = await Tour.findByIdAndDelete(id);
-//   if (!tour) {
-//     return next(new AppError('No tour found with that ID', 404));
-//   }
-//   res.status(204).json({
-//     status: 'success',
-//     data: null,
-//   });
-// });
+exports.createNewTour = factory.createOne(Tour);
+exports.updateTour = factory.updateOne(Tour);
 exports.deleteTour = factory.deleteOne(Tour);
 
 exports.getTourStats = catchAsync(async (req, res, next) => {

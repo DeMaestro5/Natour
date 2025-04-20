@@ -12,12 +12,13 @@ router
   .post(
     authController.protect,
     authController.restrictTo('user'),
+    reviewController.setTourUserIds,
     reviewController.createReview
   );
 router
   .route('/:id')
   .get(authController.protect, reviewController.getReviewById)
-  .patch(authController.protect, reviewController.updateReview)
+  .patch(reviewController.updateReview)
   .delete(
     authController.protect,
     authController.restrictTo('admin', 'lead-guide'),
