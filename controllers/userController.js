@@ -60,3 +60,8 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
     data: null,
   });
 });
+
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.id; // Overwrite the id so that getOne works
+  next();
+};
