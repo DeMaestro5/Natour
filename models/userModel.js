@@ -52,24 +52,24 @@ const userSchema = new mongoose.Schema({
   passwordResetExpires: Date,
 });
 
-// Middleware to hash password before saving
-userSchema.pre('save', async function (next) {
-  // Only run this function if password was modified
-  if (!this.isModified('password')) return next();
-  // Hash the password with a cost of 12
-  this.password = await bcrypt.hash(this.password, 12);
-  // Delete passwordConfirm field
-  this.passwordConfirm = undefined; // Remove passwordConfirm field after hashing
-  next();
-});
+// // Middleware to hash password before saving
+// userSchema.pre('save', async function (next) {
+//   // Only run this function if password was modified
+//   if (!this.isModified('password')) return next();
+//   // Hash the password with a cost of 12
+//   this.password = await bcrypt.hash(this.password, 12);
+//   // Delete passwordConfirm field
+//   this.passwordConfirm = undefined; // Remove passwordConfirm field after hashing
+//   next();
+// });
 
-userSchema.pre('save', function (next) {
-  // Check if password was modified
-  if (!this.isModified('password') || this.isNew) return next();
-  // Set passwordChangedAt to current date
-  this.passwordChangedAt = Date.now() - 1000; // Subtract 1 second to ensure the token is valid
-  next();
-});
+// userSchema.pre('save', function (next) {
+//   // Check if password was modified
+//   if (!this.isModified('password') || this.isNew) return next();
+//   // Set passwordChangedAt to current date
+//   this.passwordChangedAt = Date.now() - 1000; // Subtract 1 second to ensure the token is valid
+//   next();
+// });
 
 userSchema.pre(/^find/, function (next) {
   // This middleware runs before every find query
